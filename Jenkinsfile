@@ -11,15 +11,15 @@ pipeline {
             steps {
                 script {
                     // Use Jenkins credentials for secure access
-                withCredentials([string(credentialsId: 'github_pat_credentials', variable: 'GIT_PAT')]) {
-                    checkout scm: [
-                    $class: 'GitSCM',
-                    branches: [[name: '*/main']],
-                    doGenerateSubmoduleConfigurations: false,
-                    extensions: [],
-                    submoduleCfg: [],
-                    userRemoteConfigs: [[
-                    url: "https://${GIT_PAT}@github.com/rkdhakal/Retail-Industry-Project"
+                       withCredentials([string(credentialsId: 'github_pat_credentials', variable: 'GIT_PAT')]) {
+                            checkout scm: [
+                            $class: 'GitSCM',
+                            branches: [[name: '*/main']],
+                            doGenerateSubmoduleConfigurations: false,
+                            extensions: [],
+                            submoduleCfg: [],
+                            userRemoteConfigs: [[
+                            url: "https://${GIT_PAT}@github.com/rkdhakal/Retail-Industry-Project"
                             ]]
                         ]
                     }
