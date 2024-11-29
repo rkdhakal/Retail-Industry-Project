@@ -4,23 +4,27 @@ pipeline {
     environment {
         DOCKER_IMAGE = "retail-price-optimizer" // Docker image name
         REPO_URL = "https://github.com/rkdhakal/Retail-Industry-Project"
-        GIT_CREDENTIALS = "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" // Set up your GitHub PAT in Jenkins credentials
     }
 
     stages {
         stage('Clone Repository') {
             steps {
-                checkout scm: [
-                    $class: 'GitSCM',
-                    branches: [[name: '*/main']],
-                    doGenerateSubmoduleConfigurations: false,
-                    extensions: [],
-                    submoduleCfg: [],
-                    userRemoteConfigs: [[
-                        credentialsId: "${GIT_CREDENTIALS}",
-                        url: "${REPO_URL}"
-                    ]]
-                ]
+                script {
+                    // Use Jenkins credentials for secure access
+                    withCredentials([string(credentialsId: 'github_pat_credentials', variable: 'GIT_PAT')]) {
+                        checkout scm: [
+                            $class: 'GitSCM',
+                            branches: [[name: '*/main']],
+                            doGenerateSubmoduleConfigurations: false,
+                            extensions: [],
+                            submoduleCfg: [],
+                            userRemoteConfigs: [[
+                                credentialsId: '',
+                                url: "https://${GIT_PAT}@github.com/rkdhakal/Retail-Industry-Project"
+                            ]]
+                        ]
+                    }
+                }
             }
         }
 
