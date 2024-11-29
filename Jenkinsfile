@@ -19,7 +19,6 @@ pipeline {
                             extensions: [],
                             submoduleCfg: [],
                             userRemoteConfigs: [[
-                                credentialsId: '',
                                 url: "https://${GIT_PAT}@github.com/rkdhakal/Retail-Industry-Project"
                             ]]
                         ]
