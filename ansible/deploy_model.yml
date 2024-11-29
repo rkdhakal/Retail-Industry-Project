@@ -1,0 +1,36 @@
+- name: Deploy the Retail Pricing System
+  hosts: localhost
+  become: true
+  tasks:
+    - name: Ensure required packages are installed
+      apt:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - docker.io
+        - python3
+        - python3-pip
+      become: true
+
+    - name: Start Docker service
+      service:
+        name: docker
+        state: started
+
+    - name: Remove existing container if running
+      shell: |
+        docker rm -f retail-pricing-system || echo "No existing container to remove"
+      args:
+        executable: /bin/bash
+
+    - name: Build Docker image locally
+      shell: docker build -t retail-price-optimizer .
+      args:
+        chdir: "{{ playbook_dir }}"
+
+    - name: Run the Docker container
+      shell: >
+        docker run -d --name retail-pricing-system
+        -p 8080:8080
+        retail-price-optimizer
+
