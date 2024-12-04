@@ -37,17 +37,16 @@ pipeline {
                 '''
             }
         }
-
         stage('Deploy to Staging') {
-            steps {
-                sh '''
-                    echo "Deploying to Staging..."
-                    docker run --rm -v "$WORKSPACE:/app" -w /app -v "$DOCKER_CONFIG:/root/.docker" $DOCKER_IMAGE \
-                        bash -c "apt-get update && apt-get install -y ansible && \
-                        ansible-playbook -i ansible/inventory ansible/deploy_model.yml"
-                '''
-            }
-        }
+    steps {
+        sh '''
+            echo "Deploying to Staging..."
+            docker run --rm -v "$WORKSPACE:/app" -w /app -v "$DOCKER_CONFIG:/root/.docker" $DOCKER_IMAGE \
+                bash -c "ansible-playbook -i ansible/inventory ansible/deploy_model.yml"
+        '''
+    }
+}
+
 
         stage('Deploy to Production') {
             steps {
