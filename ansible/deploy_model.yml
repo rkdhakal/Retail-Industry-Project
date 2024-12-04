@@ -9,21 +9,27 @@
       with_items:
         - python3
         - python3-pip
-      become: true
 
     - name: Ensure user is part of the Docker group
-      shell: usermod -aG docker $USER
-      args:
-        executable: /bin/bash
-      ignore_errors: true
-
-    - name: Refresh group memberships
-      shell: newgrp docker || true
+      shell: |
+        usermod -aG docker $(whoami)
+        newgrp docker
       args:
         executable: /bin/bash
 
     - name: Test Docker CLI Access
       shell: docker ps
+      register: docker_test
+      ignore_errors: yes
+
+    - name: Print Docker Test Result
+      debug:
+        msg: "{{ docker_test.stderr }}"
+
+    - name: Start Docker service
+      service:
+        name: docker
+        state: started
 
     - name: Remove existing container if running
       shell: |
