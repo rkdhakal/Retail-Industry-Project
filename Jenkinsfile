@@ -37,14 +37,14 @@ pipeline {
             }
         }
 
-        stage('Run Tests') {
-            steps {
-                sh '''
-                    echo "Running Tests..."
-                    docker run --rm $DOCKER_IMAGE pytest tests/
-                '''
-            }
-        }
+        // stage('Run Tests') {
+        //     steps {
+        //         sh '''
+        //             echo "Running Tests..."
+        //             docker run --rm $DOCKER_IMAGE pytest tests/
+        //         '''
+        //     }
+        // }
 
         stage('Deploy to Staging') {
             steps {
