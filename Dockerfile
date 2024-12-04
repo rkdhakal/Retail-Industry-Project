@@ -1,16 +1,21 @@
-# Use an official lightweight Python image
+# Use Python as the base image
 FROM python:3.9-slim
 
 # Set the working directory inside the container
 WORKDIR /app
 
-# Copy the dependencies file to the working directory
-COPY requirements.txt .
+# Install system dependencies and Ansible
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    ansible \
+    git \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Install Python dependencies
+# Copy the requirements file and install Python dependencies
+COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the entire project directory to the container
+# Copy the entire project into the container
 COPY . .
 
 # Expose the port Streamlit will run on
