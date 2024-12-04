@@ -7,15 +7,9 @@
         name: "{{ item }}"
         state: present
       with_items:
-        - docker.io
         - python3
         - python3-pip
       become: true
-
-    - name: Start Docker service
-      service:
-        name: docker
-        state: started
 
     - name: Remove existing container if running
       shell: |
@@ -33,4 +27,3 @@
         docker run -d --name retail-pricing-system
         -p 8080:8080
         retail-price-optimizer
-
