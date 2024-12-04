@@ -1,7 +1,7 @@
 pipeline {
     agent {
         docker {
-            image 'docker:24.0.7' // Ensure this matches your Docker version
+            image 'docker:24.0.7'
             args '--privileged -v /var/run/docker.sock:/var/run/docker.sock'
         }
     }
@@ -9,7 +9,6 @@ pipeline {
     environment {
         DOCKER_IMAGE = "retail-price-optimizer"
         REPO_URL = "https://github.com/rkdhakal/Retail-Industry-Project"
-        DOCKER_CONFIG = "$WORKSPACE/.docker" // Set Docker config to a writable directory
     }
 
     stages {
@@ -37,20 +36,12 @@ pipeline {
             }
         }
 
-        // stage('Run Tests') {
-        //     steps {
-        //         sh '''
-        //             echo "Running Tests..."
-        //             docker run --rm $DOCKER_IMAGE pytest tests/
-        //         '''
-        //     }
-        // }
-
         stage('Deploy to Staging') {
             steps {
                 sh '''
                     echo "Deploying to Staging..."
-                    ansible-playbook -i inventory deploy_model.yml
+                    docker run --rm -v $WORKSPACE:/app -w /app $DOCKER_IMAGE \
+                        ansible-playbook -i ansible/inventory ansible/deploy_model.yml
                 '''
             }
         }
@@ -59,7 +50,8 @@ pipeline {
             steps {
                 sh '''
                     echo "Deploying to Production..."
-                    ansible-playbook -i inventory deploy_model.yml --extra-vars "env=production"
+                    docker run --rm -v $WORKSPACE:/app -w /app $DOCKER_IMAGE \
+                        ansible-playbook -i ansible/inventory ansible/deploy_model.yml --extra-vars "env=production"
                 '''
             }
         }
