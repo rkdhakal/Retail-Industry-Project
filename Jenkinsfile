@@ -7,9 +7,9 @@ pipeline {
     }
 
     environment {
-        DOCKER_IMAGE = "retail-price-optimizer"
+        DOCKER_IMAGE = "retail-price-optimizer" // Ensure this is lowercase
         REPO_URL = "https://github.com/rkdhakal/Retail-Industry-Project"
-        DOCKER_CONFIG = "$WORKSPACE/.docker" // Set Docker config to a writable directory
+        WORKDIR = "/app"
     }
 
     stages {
@@ -37,20 +37,20 @@ pipeline {
             }
         }
 
-        // stage('Run Tests') {
-        //     steps {
-        //         sh '''
-        //             echo "Running Tests..."
-        //             docker run --rm $DOCKER_IMAGE pytest tests/
-        //         '''
-        //     }
-        // }
+        stage('Run Tests') {
+            steps {
+                sh '''
+                    echo "Running Tests..."
+                    docker run --rm $DOCKER_IMAGE pytest tests/
+                '''
+            }
+        }
 
         stage('Deploy to Staging') {
             steps {
                 sh '''
                     echo "Deploying to Staging..."
-                    docker run --rm -v $WORKSPACE:/app -w /app $DOCKER_IMAGE \
+                    docker run --rm -v "$WORKSPACE:$WORKDIR" -w "$WORKDIR" $DOCKER_IMAGE \
                         ansible-playbook -i ansible/inventory ansible/deploy_model.yml
                 '''
             }
@@ -60,7 +60,7 @@ pipeline {
             steps {
                 sh '''
                     echo "Deploying to Production..."
-                    docker run --rm -v $WORKSPACE:/app -w /app $DOCKER_IMAGE \
+                    docker run --rm -v "$WORKSPACE:$WORKDIR" -w "$WORKDIR" $DOCKER_IMAGE \
                         ansible-playbook -i ansible/inventory ansible/deploy_model.yml --extra-vars "env=production"
                 '''
             }
