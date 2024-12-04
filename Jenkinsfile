@@ -41,11 +41,12 @@ pipeline {
             steps {
                 sh '''
                     echo "Deploying to Staging..."
-                    docker run -d --name retail-pricing-system -p 8501:8501 $DOCKER_IMAGE \
+                    docker run -d --name retail-pricing-system -p 8501:8501 retail-price-optimizer \
                         bash -c "ansible-playbook -i ansible/inventory ansible/deploy_model.yml"
                 '''
             }
         }
+
     }
 
     post {
