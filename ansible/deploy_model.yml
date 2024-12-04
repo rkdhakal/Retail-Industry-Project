@@ -13,9 +13,9 @@
     - name: Ensure user is part of the Docker group
       shell: |
         usermod -aG docker $(whoami)
-        newgrp docker
       args:
         executable: /bin/bash
+      ignore_errors: yes
 
     - name: Test Docker CLI Access
       shell: docker ps
@@ -25,11 +25,6 @@
     - name: Print Docker Test Result
       debug:
         msg: "{{ docker_test.stderr }}"
-
-    - name: Start Docker service
-      service:
-        name: docker
-        state: started
 
     - name: Remove existing container if running
       shell: |
