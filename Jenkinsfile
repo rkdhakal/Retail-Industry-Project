@@ -10,6 +10,7 @@ pipeline {
         DOCKER_IMAGE = "retail-price-optimizer"
         REPO_URL = "https://github.com/rkdhakal/Retail-Industry-Project"
         DOCKER_CONFIG = "$WORKSPACE/.docker" // Ensure Docker uses this configuration directory
+        SANITIZED_WORKSPACE = "${WORKSPACE.replaceAll(' ', '_').toLowerCase()}" // Replace spaces with underscores
     }
 
     stages {
@@ -41,7 +42,7 @@ pipeline {
             steps {
                 sh '''
                     echo "Deploying to Staging..."
-                    docker run --rm -v $WORKSPACE:/app -w /app -v $DOCKER_CONFIG:/root/.docker $DOCKER_IMAGE \
+                    docker run --rm -v "$WORKSPACE:/app" -w /app -v "$DOCKER_CONFIG:/root/.docker" $DOCKER_IMAGE \
                         bash -c "apt-get update && apt-get install -y ansible && \
                         ansible-playbook -i ansible/inventory ansible/deploy_model.yml"
                 '''
@@ -52,7 +53,7 @@ pipeline {
             steps {
                 sh '''
                     echo "Deploying to Production..."
-                    docker run --rm -v $WORKSPACE:/app -w /app -v $DOCKER_CONFIG:/root/.docker $DOCKER_IMAGE \
+                    docker run --rm -v "$WORKSPACE:/app" -w /app -v "$DOCKER_CONFIG:/root/.docker" $DOCKER_IMAGE \
                         bash -c "apt-get update && apt-get install -y ansible && \
                         ansible-playbook -i ansible/inventory ansible/deploy_model.yml --extra-vars 'env=production'"
                 '''
