@@ -1,7 +1,7 @@
 pipeline {
     agent {
         docker {
-            image 'docker:latest'
+            image 'docker:20.10' // Use a Docker image with Docker CLI preinstalled
             args '--privileged -v /var/run/docker.sock:/var/run/docker.sock'
         }
     }
@@ -24,14 +24,6 @@ pipeline {
                             ]]
                         ]
                     }
-                }
-            }
-        }
-
-        stage('Prepare Docker Access') {
-            steps {
-                script {
-                    sh 'chmod 666 /var/run/docker.sock'
                 }
             }
         }
