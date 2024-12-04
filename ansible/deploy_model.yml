@@ -2,17 +2,20 @@
   hosts: localhost
   become: true
   tasks:
-    - name: Install Docker if not present
+    - name: Ensure required packages are installed
       apt:
-        name: docker.io
+        name: "{{ item }}"
         state: present
-        update_cache: yes
+      with_items:
+        - docker.io
+        - python3
+        - python3-pip
       become: true
 
-    - name: Ensure Docker command is available
-      command: which docker
-      register: docker_check
-      failed_when: docker_check.rc != 0
+    - name: Start Docker service
+      service:
+        name: docker
+        state: started
 
     - name: Remove existing container if running
       shell: |
@@ -21,7 +24,7 @@
         executable: /bin/bash
 
     - name: Build Docker image locally
-      shell: docker build -t retail-price-optimizer .
+      shell: docker build -t retail-price-optimizer -f ../Dockerfile .
       args:
         chdir: "{{ playbook_dir }}"
 
