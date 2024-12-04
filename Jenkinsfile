@@ -2,14 +2,14 @@ pipeline {
     agent {
         docker {
             image 'docker:24.0.7' // Ensure this matches your Docker version
-            args '--privileged -v /var/run/docker.sock:/var/run/docker.sock'
+            args '--privileged -v /var/run/docker.sock:/var/run/docker.sock -v $HOME/.docker:/root/.docker'
         }
     }
 
     environment {
-        DOCKER_IMAGE = "retail-price-optimizer" // Ensure this is lowercase
+        DOCKER_IMAGE = "retail-price-optimizer"
+        WORKDIR = "/app" // Set working directory for container
         REPO_URL = "https://github.com/rkdhakal/Retail-Industry-Project"
-        WORKDIR = "/app"
     }
 
     stages {
@@ -32,7 +32,7 @@ pipeline {
             steps {
                 sh '''
                     echo "Building Docker Image..."
-                    docker build -t $DOCKER_IMAGE .
+                    docker build --config /root/.docker -t $DOCKER_IMAGE .
                 '''
             }
         }
