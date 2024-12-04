@@ -11,9 +11,19 @@
         - python3-pip
       become: true
 
-    - name: Skip starting Docker service since it is already running on host
-      debug:
-        msg: "Skipping Docker service management since Docker is running on the host"
+    - name: Ensure user is part of the Docker group
+      shell: usermod -aG docker $USER
+      args:
+        executable: /bin/bash
+      ignore_errors: true
+
+    - name: Refresh group memberships
+      shell: newgrp docker || true
+      args:
+        executable: /bin/bash
+
+    - name: Test Docker CLI Access
+      shell: docker ps
 
     - name: Remove existing container if running
       shell: |
