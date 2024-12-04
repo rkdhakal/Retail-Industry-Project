@@ -1,6 +1,10 @@
 - name: Deploy the Retail Pricing System
   hosts: localhost
   become: true
+  vars:
+    container_name: "{{ 'retail-pricing-system-production' if env == 'production' else 'retail-pricing-system' }}"
+    host_port: "{{ 8502 if env == 'production' else 8501 }}"
+
   tasks:
     - name: Ensure required packages are installed
       apt:
@@ -21,7 +25,7 @@
 
     - name: Remove existing container if running
       shell: |
-        docker rm -f retail-pricing-system || echo "No existing container to remove"
+        docker rm -f {{ container_name }} || echo "No existing container to remove"
       args:
         executable: /bin/bash
 
@@ -32,6 +36,6 @@
 
     - name: Run the Docker container
       shell: >
-        docker run -d --name retail-pricing-system
-        -p 8501:8501
+        docker run -d --name {{ container_name }}
+        -p {{ host_port }}:8501
         retail-price-optimizer
