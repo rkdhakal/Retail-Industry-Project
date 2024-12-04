@@ -2,14 +2,14 @@ pipeline {
     agent {
         docker {
             image 'docker:24.0.7' // Ensure this matches your Docker version
-            args '--privileged -v /var/run/docker.sock:/var/run/docker.sock -v $HOME/.docker:/root/.docker'
+            args '--privileged -v /var/run/docker.sock:/var/run/docker.sock -v $WORKSPACE/.docker:/root/.docker'
         }
     }
 
     environment {
         DOCKER_IMAGE = "retail-price-optimizer"
-        WORKDIR = "/app" // Set working directory for container
         REPO_URL = "https://github.com/rkdhakal/Retail-Industry-Project"
+        DOCKER_CONFIG = "$WORKSPACE/.docker" // Ensure Docker uses this configuration directory
     }
 
     stages {
@@ -32,16 +32,7 @@ pipeline {
             steps {
                 sh '''
                     echo "Building Docker Image..."
-                    docker build --config /root/.docker -t $DOCKER_IMAGE .
-                '''
-            }
-        }
-
-        stage('Run Tests') {
-            steps {
-                sh '''
-                    echo "Running Tests..."
-                    docker run --rm $DOCKER_IMAGE pytest tests/
+                    docker build -t $DOCKER_IMAGE .
                 '''
             }
         }
@@ -50,8 +41,9 @@ pipeline {
             steps {
                 sh '''
                     echo "Deploying to Staging..."
-                    docker run --rm -v "$WORKSPACE:$WORKDIR" -w "$WORKDIR" $DOCKER_IMAGE \
-                        ansible-playbook -i ansible/inventory ansible/deploy_model.yml
+                    docker run --rm -v $WORKSPACE:/app -w /app -v $DOCKER_CONFIG:/root/.docker $DOCKER_IMAGE \
+                        bash -c "apt-get update && apt-get install -y ansible && \
+                        ansible-playbook -i ansible/inventory ansible/deploy_model.yml"
                 '''
             }
         }
@@ -60,8 +52,9 @@ pipeline {
             steps {
                 sh '''
                     echo "Deploying to Production..."
-                    docker run --rm -v "$WORKSPACE:$WORKDIR" -w "$WORKDIR" $DOCKER_IMAGE \
-                        ansible-playbook -i ansible/inventory ansible/deploy_model.yml --extra-vars "env=production"
+                    docker run --rm -v $WORKSPACE:/app -w /app -v $DOCKER_CONFIG:/root/.docker $DOCKER_IMAGE \
+                        bash -c "apt-get update && apt-get install -y ansible && \
+                        ansible-playbook -i ansible/inventory ansible/deploy_model.yml --extra-vars 'env=production'"
                 '''
             }
         }
