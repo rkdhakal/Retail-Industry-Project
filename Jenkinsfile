@@ -47,6 +47,19 @@ pipeline {
             }
         }
 
+        stage('Deploy to Production') {
+            steps {
+                sh '''
+                    echo "Deploying to Production..."
+                    # Remove any existing container
+                    docker rm -f retail-pricing-system-production || echo "No existing production container to remove"
+        
+                    # Run the new container for production
+                    docker run -d --name retail-pricing-system-production -p 8502:8501 retail-price-optimizer \
+                        bash -c "ansible-playbook -i ansible/inventory ansible/deploy_model.yml --extra-vars 'env=production'"
+                '''
+            }
+        }
     }
 
     post {
