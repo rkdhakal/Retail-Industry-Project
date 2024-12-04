@@ -1,5 +1,4 @@
 import pytest
-from models.model import PriceOptimizationModel
 import pandas as pd
 
 
