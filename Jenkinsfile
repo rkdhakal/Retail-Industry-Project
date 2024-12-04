@@ -1,7 +1,7 @@
 pipeline {
     agent {
         docker {
-            image 'docker:24.0.7' // Use a Docker image with Docker CLI preinstalled
+            image 'docker:24.0.7' // Ensure this matches your Docker version
             args '--privileged -v /var/run/docker.sock:/var/run/docker.sock'
         }
     }
@@ -9,6 +9,7 @@ pipeline {
     environment {
         DOCKER_IMAGE = "retail-price-optimizer"
         REPO_URL = "https://github.com/rkdhakal/Retail-Industry-Project"
+        DOCKER_CONFIG = "$WORKSPACE/.docker" // Set Docker config to a writable directory
     }
 
     stages {
