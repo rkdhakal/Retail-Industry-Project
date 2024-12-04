@@ -36,13 +36,13 @@ pipeline {
                 '''
             }
         }
-
+        
         stage('Deploy to Staging') {
             steps {
                 sh '''
                     echo "Deploying to Staging..."
-                    docker run -d --name retail-pricing-system -p 8501:8501 retail-price-optimizer \
-                        bash -c "ansible-playbook -i ansible/inventory ansible/deploy_model.yml"
+                    docker rm -f retail-pricing-system || echo "No existing container to remove"
+                    docker run -d --name retail-pricing-system -p 8501:8501 retail-price-optimizer
                 '''
             }
         }
