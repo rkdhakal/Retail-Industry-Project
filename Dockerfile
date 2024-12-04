@@ -4,7 +4,7 @@ FROM python:3.9-slim
 # Set the working directory inside the container
 WORKDIR /app
 
-# Install system dependencies including Docker CLI and Ansible
+# Install system dependencies including Docker CLI
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
     docker.io \
@@ -13,9 +13,9 @@ RUN apt-get update && \
     curl \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Create a non-root user with permissions
-RUN groupadd -g 999 docker && \
-    useradd -r -u 999 -g docker dockeruser && \
+# Create a non-root user with permissions if not already exists
+RUN groupadd -f -g 999 docker && \
+    id -u dockeruser || useradd -r -u 999 -g docker dockeruser && \
     usermod -aG docker dockeruser
 
 # Set the environment variable for Docker CLI
