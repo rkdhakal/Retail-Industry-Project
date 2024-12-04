@@ -13,10 +13,9 @@ RUN apt-get update && \
     curl \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Create a non-root user with permissions
-RUN groupadd -f -g 999 docker && \
-    id -u dockeruser &>/dev/null || useradd -r -u 999 -g docker dockeruser && \
-    usermod -aG docker dockeruser
+# Create a non-root user with Docker permissions
+RUN groupadd -f docker && \
+    useradd -r -m -s /bin/bash -G docker dockeruser || echo "User already exists"
 
 # Set the environment variable for Docker CLI
 ENV DOCKER_HOST=unix:///var/run/docker.sock
