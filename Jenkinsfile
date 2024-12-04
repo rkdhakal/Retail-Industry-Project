@@ -41,7 +41,7 @@ pipeline {
             steps {
                 sh '''
                     echo "Deploying to Staging..."
-                    docker run --rm -v "$WORKSPACE:/app" -w /app -v "$DOCKER_CONFIG:/root/.docker" $DOCKER_IMAGE \
+                        docker run --rm -v "$WORKSPACE:/app" -w /app -v "$DOCKER_CONFIG:/root/.docker" $DOCKER_IMAGE
                         bash -c "ansible-playbook -i ansible/inventory ansible/deploy_model.yml"
                 '''
             }
