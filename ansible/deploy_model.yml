@@ -29,11 +29,11 @@
     shell: docker build -t retail-price-optimizer -f /app/Dockerfile .
     args:
       chdir: /app  # Set the root directory as the working directory
-    ignore_errors: yes  # Prevent failure if Docker daemon access issues persist
+    # ignore_errors: yes  # Prevent failure if Docker daemon access issues persist
 
     - name: Run the Docker container
       shell: >
         docker run -d --name retail-pricing-system
         -p 8080:8080
         retail-price-optimizer
-      ignore_errors: yes  # Prevent failure if Docker daemon access issues persist
+      # ignore_errors: yes  # Prevent failure if Docker daemon access issues persist
