@@ -25,14 +25,13 @@
       args:
         executable: /bin/bash
 
-  - name: Build Docker image locally
-    shell: docker build -t retail-price-optimizer -f /app/Dockerfile .
-    args:
-      chdir: /app  # Set the root directory as the working directory
-    # ignore_errors: yes  # Prevent failure if Docker daemon access issues persist
+    - name: Build Docker image locally
+      shell: docker build -t retail-price-optimizer -f /app/Dockerfile .
+      args:
+        chdir: /app
 
     - name: Run the Docker container
       shell: >
         docker run -d --name retail-pricing-system
-        -p 8501:8501  # Correctly map container port 8501 to host port 8501
+        -p 8501:8501
         retail-price-optimizer
