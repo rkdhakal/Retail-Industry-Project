@@ -4,9 +4,10 @@ FROM python:3.9-slim
 # Set the working directory inside the container
 WORKDIR /app
 
-# Install system dependencies and Ansible
+# Install system dependencies including Docker CLI
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
+    docker.io \
     ansible \
     git \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
