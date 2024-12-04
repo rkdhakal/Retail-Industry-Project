@@ -7,10 +7,9 @@ pipeline {
     }
 
     environment {
-        DOCKER_IMAGE = "retail-price-optimizer"
+        RAW_DOCKER_IMAGE = "Retail-Price-Optimizer"
+        DOCKER_IMAGE = "${RAW_DOCKER_IMAGE.toLowerCase()}"
         REPO_URL = "https://github.com/rkdhakal/Retail-Industry-Project"
-        DOCKER_CONFIG = "$WORKSPACE/.docker"
-        SANITIZED_WORKSPACE = "${WORKSPACE.replaceAll(' ', '_').toLowerCase()}" // Replace spaces with underscores
     }
 
     stages {
