@@ -34,6 +34,5 @@
     - name: Run the Docker container
       shell: >
         docker run -d --name retail-pricing-system
-        -p 8080:8080
+        -p 8501:8501  # Correctly map container port 8501 to host port 8501
         retail-price-optimizer
-      # ignore_errors: yes  # Prevent failure if Docker daemon access issues persist
