@@ -14,7 +14,7 @@ def load_data(file_path):
 
 
 def main():
-    st.title("Retail Price Optimization Dashboard")
+    st.title("Retail Price Optimization Dashboard by Group C")
     st.write("Use this dashboard to explore and optimize product pricing.")
 
     # Load and display data
