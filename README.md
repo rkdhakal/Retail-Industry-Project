@@ -1,19 +1,19 @@
 Student Name 	Student ID 
  
  
-Abhishek Pandey--------500227770 
+Abhishek Pandey
 
 
-Ram Krishna Dhakal-----500228601 
+Ram Krishna Dhakal
 
 
-Bibek Khadka-----------500216129 
+Bibek Khadka
 
 
-Govind Ram Gupta Belde-500228074 
+Govind Ram Gupta Belde
 
 
-Kamalpreet Kaur--------500227884 
+Kamalpreet Kaur
 
 https://rkdhakal-retail-industry-project-main-ocxac1.streamlit.app/
 
